@@ -5,22 +5,22 @@
 
 function updateStatus(){
 
-	var text = document.getElementById("msg").value;
-	var d = new Date();
-	var month = d.getMonth() + 1;
-	var day = d.getDate();
-	var year = d.getFullYear();
-	var hour = d.getHours();
-	var minute = d.getMinutes();
-	var date = month + "/" + day + "/" + year + " " + hour + ":" + minute;
-	var update = document.createElement("li");
+	text = document.getElementById("msg").value;
+	d = new Date();
+	month = d.getMonth() + 1;
+	day = d.getDate();
+	year = d.getFullYear();
+	hour = d.getHours();
+	minute = d.getMinutes();
+	date = month + "/" + day + "/" + year + " " + hour + ":" + minute;
+	update = document.createElement("li");
 	update.appendChild(document.createTextNode(date + " - " + text));
-	var statuslist = document.getElementById("statuslist");
+	statuslist = document.getElementById("statuslist");
 	if (statuslist.firstChild == null){
 		statuslist.appendChild(update);
 	}
 	else {
-		var firstNode = statuslist.firstChild;
+		firstNode = statuslist.firstChild;
 		statuslist.insertBefore(update, firstNode);
 	}
 }
