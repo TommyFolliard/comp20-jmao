@@ -1,10 +1,14 @@
 function start_game(){
-	draw_background();
-	initialize_parameters();
-	draw_game();
-	draw_lives(numLives);
-	draw_level(levelNum);
-	draw_score(score, highScore);
+	img=new Image();
+	img.src="assets/frogger_sprites.png";
+	img.onload = function() {
+		draw_background();
+		initialize_parameters();
+		draw_game();
+		draw_lives(numLives);
+		draw_level(levelNum);
+		draw_score(score, highScore);
+	}
 }
 
 function draw_background(){
@@ -14,8 +18,6 @@ function draw_background(){
 	ctx.fillRect(0, 0, 399, 283);
 	ctx.fillStyle = "#000000"; //black bottom half
 	ctx.fillRect(0, 283, 399, 565);
-	img=new Image();
-	img.src="assets/frogger_sprites.png";
 	//header
 	ctx.drawImage(img, 0, 0, 399, 115, 0, 0, 399, 115);
 	//top purple roadside
