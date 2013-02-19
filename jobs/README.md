@@ -5,10 +5,9 @@
 	- No outputs in JavaScript console
 	- No additional HTML tags inside the body
 	- Each job is shown in the following order
-		1. Company
-		2. Location
-		3. Position
+		 Company, Location, Position
 	- No additional HTML tags inside of the <body>...</body>
+
 
 2. I did not collaborate or discuss this assignment with anyone.
 
