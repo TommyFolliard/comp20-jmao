@@ -1,13 +1,12 @@
 1. All aspects of my work have been correctly implemented:
-	- JSON is parsed correctly
-	- All jobs are rendered on page in the <div id="list"> section
+	JSON is parsed correctly
+	All jobs are rendered on page in the <div id="list"> section
 	of the body
-	- No outputs in JavaScript console
-	- No additional HTML tags inside the body
-	- Each job is shown in the following order
-		 Company, Location, Position
-	- No additional HTML tags inside of the <body>...</body>
-
+	No outputs in JavaScript console
+	No additional HTML tags inside the body
+	Each job is shown in the following order:
+		 1. Company, 2. Location, 3.  Position
+	No additional HTML tags inside of the <body>...</body>
 
 2. I did not collaborate or discuss this assignment with anyone.
 
