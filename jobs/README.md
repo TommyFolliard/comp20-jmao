@@ -1,6 +1,6 @@
 1. All aspects of my work have been correctly implemented:
 -- JSON is parsed correctly
--- All jobs are rendered on page in the <div id="list"> section
+-- All jobs are rendered on page in the div section
 -- of the body
 -- No outputs in JavaScript console
 -- No additional HTML tags inside the body
