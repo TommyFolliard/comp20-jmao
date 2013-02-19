@@ -1,7 +1,7 @@
 1. All aspects of my work have been correctly implemented:
 -- JSON is parsed correctly
 -- All jobs are rendered on page in the div section
--- of the body
+ of the body
 -- No outputs in JavaScript console
 -- No additional HTML tags inside the body
 -- Each job is shown in the following order:
