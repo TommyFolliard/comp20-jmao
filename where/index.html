@@ -24,38 +24,37 @@
 	var places;
 	var nearestStop;
 	var numberOfStops = 21;
+	var station = new Object();
 
 	function init()
 	{
 		initStations();
 		map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 		getMyLocation();
-		nearestStop();
 	}
 
 	function initStations(){
-		location = new Object;
-		location[0] = {'name': 'alewife', 'lat': 42.395428, 'lon': -71.142483};
-		location[1] = {'name': 'davis', 'lat': 42.39674, 'lon': -71.121815};
-		location[2] = {'name': 'porter', 'lat': 42.3884, 'lon': -71.119149};
-		location[3] = {'name': 'harvard', 'lat': 42.373362, 'lon': -71.118956};
-		location[4] = {'name': 'central','lat': 42.365486, 'lon': -71.103802};
-		location[5] = {'name': 'kendall', 'lat': 42.36249079, 'lon': -71.08617653};
-		location[6] = {'name': 'charlesmgh', 'lat': 42.361166, 'lon': -71.070628};
-		location[7] = {'name': 'parkst', 'lat': 42.35639457, 'lon': -71.0624242};
-		location[8] = {'name': 'downtowncrossing', 'lat': 42.355518, 'lon': -71.060225};
-		location[9] = {'name': 'southstation', 'lat': 42.352271, 'lon': -71.055242};
-		location[10] = {'name': 'broadway', 'lat': 42.342622, 'lon': -71.056967};
-		location[11] = {'name': 'andrew', 'lat': 42.330154, 'lon': -71.057655};
-		location[12] = {'name': 'jfk', 'lat': 42.320685, 'lon': -71.052391};
-		location[13] = {'name': 'savinhill', 'lat': 42.31129, 'lon': -71.053331};
-		location[14] = {'name': 'fieldscorner', 'lat': 42.300093, 'lon': -71.061667};
-		location[15] = {'name': 'shawmut', 'lat': 42.29312583, 'lon': -71.06573796};
-		location[16] = {'name': 'ashmont', 'lat': 42.284652, 'lon': -71.064489};
-		location[17] = {'name': 'wollaston', 'lat': 42.2665139, 'lon': -71.0203369};
-		location[18] = {'name': 'quincycenter', 'lat': 42.251809, 'lon': -71.005409};
-		location[19] = {'name': 'quincyadams', 'lat': 42.233391, 'lon': -71.007153};
-		location[20] = {'name': 'braintree', 'lat': 42.2078543, 'lon': -71.0011385};		
+		station[0] = {'name': 'alewife', 'lat': 42.395428, 'lon': -71.142483};
+		station[1] = {'name': 'davis', 'lat': 42.39674, 'lon': -71.121815};
+		station[2] = {'name': 'porter', 'lat': 42.3884, 'lon': -71.119149};
+		station[3] = {'name': 'harvard', 'lat': 42.373362, 'lon': -71.118956};
+		station[4] = {'name': 'central','lat': 42.365486, 'lon': -71.103802};
+		station[5] = {'name': 'kendall', 'lat': 42.36249079, 'lon': -71.08617653};
+		station[6] = {'name': 'charlesmgh', 'lat': 42.361166, 'lon': -71.070628};
+		station[7] = {'name': 'parkst', 'lat': 42.35639457, 'lon': -71.0624242};
+		station[8] = {'name': 'downtowncrossing', 'lat': 42.355518, 'lon': -71.060225};
+		station[9] = {'name': 'southstation', 'lat': 42.352271, 'lon': -71.055242};
+		station[10] = {'name': 'broadway', 'lat': 42.342622, 'lon': -71.056967};
+		station[11] = {'name': 'andrew', 'lat': 42.330154, 'lon': -71.057655};
+		station[12] = {'name': 'jfk', 'lat': 42.320685, 'lon': -71.052391};
+		station[13] = {'name': 'savinhill', 'lat': 42.31129, 'lon': -71.053331};
+		station[14] = {'name': 'fieldscorner', 'lat': 42.300093, 'lon': -71.061667};
+		station[15] = {'name': 'shawmut', 'lat': 42.29312583, 'lon': -71.06573796};
+		station[16] = {'name': 'ashmont', 'lat': 42.284652, 'lon': -71.064489};
+		station[17] = {'name': 'wollaston', 'lat': 42.2665139, 'lon': -71.0203369};
+		station[18] = {'name': 'quincycenter', 'lat': 42.251809, 'lon': -71.005409};
+		station[19] = {'name': 'quincyadams', 'lat': 42.233391, 'lon': -71.007153};
+		station[20] = {'name': 'braintree', 'lat': 42.2078543, 'lon': -71.0011385};		
 	}
 
 	function getMyLocation()
@@ -65,6 +64,7 @@
 				myLat = position.coords.latitude;
 				myLng = position.coords.longitude;
 				renderMap();
+				nearestStop();
 			});
 		}
 		else {
@@ -74,30 +74,37 @@
 
 	function nearestStop(){
 		nearestStop = location[0];
-		minDistance = calculateDistance(location[0]['lat'], location[0]['lon'], myLat, myLng);
+		minDistance = calculateDistance(station[0]['lat'], myLat, station[0]['lon'], myLng);
 		for(i = 1; i < numberOfStops; i++){
-			distance = calculateDistance(location[i]['lat'], location[i]['lon'], myLat, myLng);
+			distance = calculateDistance(station[i]['lat'], myLat, station[i]['lon'], myLng);
+			console.log(distance);
 			if (distance < minDistance){
-				nearestStop = location[i];
+				nearestStop = station[i]['name'];
 				minDistance = distance;
 			}
 		}
 	}
 
+	Number.prototype.toRad = function()
+	{
+		return this * Math.PI / 180;
+	}	
+
 	function calculateDistance(lat1, lat2, lon1, lon2)
 	{
-		var R = 6371; // km
+		
+		var R = 3958.57440545;
 		var dLat = (lat2-lat1).toRad();
-		dLon = (lon2-lon1).toRad();
+		var dLon = (lon2-lon1).toRad();
 		var lat1 = lat1.toRad();
 		var lat2 = lat2.toRad();
 		var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-       		Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2);
+        		Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
 		var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
 		var d = R * c;
 		return d;
 	}
-		
+
 	function requestCarmenWaldo()
 	{
 		try {
@@ -109,14 +116,6 @@
 			alert("Whoops, exception caught!");
 		}
 	}
-
-	function callbackCarmenWaldo()
-	{
-		try {
-			if (request.readyState == 4){
-				parsed = JSON.parse(request.responseText);
-				carmenLat
-				
 
 	function renderMap()
 	{
