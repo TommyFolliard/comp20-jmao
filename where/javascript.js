@@ -332,15 +332,51 @@
 
 	function drawPolyline()
 	{
-		stationCoordinates = new Array();
-		for(var i = 0; i < numStops; i++){
-			stationCoordinates[i] = new google.maps.LatLng(station[i].lat, station[i].lon);
+		ashmontJFK = new Array();
+		for(var i = 0; i < 13; i++){
+			ashmontJFK[i] = new google.maps.LatLng(station[i].lat, station[i].lon);
 		}
-        	var redLine = new google.maps.Polyline({
-          		path: stationCoordinates,
+        	var redAshmontJFK = new google.maps.Polyline({
+          		path: ashmontJFK,
           		strokeColor: '#FF0000',
           		strokeOpacity: 1.0,
           		strokeWeight: 5
        		});
-		redLine.setMap(map);
+		redAshmontJFK.setMap(map);
+		JFKAshmont = new Array();
+		var count1 = 0;
+		for(var j = 12; j < 17; j++){
+			JFKAshmont[count1] = new google.maps.LatLng(station[j].lat, station[j].lon);
+			count1++;
+		}
+		var redJFKAshmont = new google.maps.Polyline({
+			path: JFKAshmont,
+          		strokeColor: '#FF0000',
+          		strokeOpacity: 1.0,
+          		strokeWeight: 5
+       		});
+		redJFKAshmont.setMap(map);
+		JFKBraintree = new Array();
+		var count2 = 0;
+		for(var k = 17; k < numStops; k++){
+			JFKBraintree[count2] = new google.maps.LatLng(station[k].lat, station[k].lon);
+			count2++;
+		}
+		var redJFKBraintree = new google.maps.Polyline({
+			path: JFKBraintree,
+          		strokeColor: '#FF0000',
+          		strokeOpacity: 1.0,
+          		strokeWeight: 5
+       		});
+		redJFKBraintree.setMap(map);
+		JFKNQuincy = new Array();
+		JFKNQuincy[0] = new google.maps.LatLng(station[12].lat, station[12].lon);
+		JFKNQuincy[1] = new google.maps.LatLng(station[17].lat, station[17].lon);
+		var redJFKNQuincy = new google.maps.Polyline({
+			path: JFKNQuincy,
+          		strokeColor: '#FF0000',
+          		strokeOpacity: 1.0,
+          		strokeWeight: 5
+		});
+		redJFKNQuincy.setMap(map);
 	}	
