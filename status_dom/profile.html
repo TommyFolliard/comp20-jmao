@@ -3,18 +3,41 @@
 <title>Fecesbook</title>
 <script>
 
-function updateStatus(){
+function reload(){
+	elem = document.getElementById("statuslist");
+	output = "";
+	for (key in localStorage){
+		update = document.createElement("li");
+		update.appendChild(document.createTextNode(key + " - " + localStorage[key]));
+		statuslist = document.getElementById("statuslist");
+		if (statuslist.firstChild == null){
+			statuslist.appendChild(update);
+		}
+		else {
+			firstNode = statuslist.firstChild;
+			statuslist.insertBefore(update, firstNode);
+		}
+	}	
+}
 
+function store(){
 	text = document.getElementById("msg").value;
 	d = new Date();
 	month = d.getMonth() + 1;
 	day = d.getDate();
 	year = d.getFullYear();
 	hour = d.getHours();
+	if (hour < 10){
+		hour = "0" + hour;
+	}
 	minute = d.getMinutes();
+	if (minute < 10){
+		minute = "0" + minute;
+	}
 	date = month + "/" + day + "/" + year + " " + hour + ":" + minute;
+	localStorage[date] = text;
 	update = document.createElement("li");
-	update.appendChild(document.createTextNode(date + " - " + text));
+	update.appendChild(document.createTextNode(date + " - " + localStorage[date]));
 	statuslist = document.getElementById("statuslist");
 	if (statuslist.firstChild == null){
 		statuslist.appendChild(update);
@@ -23,11 +46,11 @@ function updateStatus(){
 		firstNode = statuslist.firstChild;
 		statuslist.insertBefore(update, firstNode);
 	}
-}
+}	
 
 </script>
 </head>
-<body>
+<body onload="reload()" >
 <h1>Fecebook</h1>
 <div id="nav">
 <ul>
@@ -45,7 +68,7 @@ function updateStatus(){
 </p>
 <h3>
 What are you thinking about?
-<input id="msg" type="text" size="30" name="msg" onchange="updateStatus()">
+<input id="msg" type="text" size="30" name="msg" onchange="store()">
 </h3>
 <h3>Updates</h3>
 <div id="status"> 
