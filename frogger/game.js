@@ -318,9 +318,11 @@ function upMove(){
 }
 
 function downMove(){
-	frogCurrY += move;
-	spriteX = 79;
-	spriteY = 367;
+	if (frogCurrY + move <= 495){
+		frogCurrY += move;
+		spriteX = 79;
+		spriteY = 367;
+	}
 }
 
 function leftMove(){
