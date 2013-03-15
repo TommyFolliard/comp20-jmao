@@ -494,6 +494,7 @@ function check_frogger_home(){
 			homeFroggerCount++;
 			if (homeFroggerCount == 5){
 				score += 1000;
+				increaseDifficulty();
 			}	
 		}
 	}
@@ -519,4 +520,15 @@ function check_frogger_get_fly(){
 		fly.x = -50;
 		fly.y = -50;
 	}
+}
+
+function increaseDifficulty(){
+	levelNum++;
+	for (var i = 0; i < 5; i++){
+		log[i].speed *= 2;
+		vehicle[i].speed *= 2;
+		lilly_pads[i].hasFrogger = false;
+	}
+	alligator.speed *= 2;
+	homeFroggerCount = 0;
 }

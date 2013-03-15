@@ -1,3 +1,5 @@
+Part I
+
 1. All aspects of my work have been correctly implemented:
 	- all required items have been drawn on the canvas
 	- game parameters have been initialized
