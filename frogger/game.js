@@ -7,9 +7,8 @@ function start_game(){
 	ctx=c.getContext("2d");
 	initialize_parameters();
 	check_key_press();
-	img.onload = function() {
-		setInterval(animation, milliseconds);
-	}
+	startGame = setInterval(animation, milliseconds);
+	img.onload = startGame;
 }
 
 function draw_background(){
@@ -28,6 +27,13 @@ function draw_background(){
 }
 
 function draw_lilly_pads(){
+	ctx.fillStyle = "#008000";
+	for (var i = 0; i < lilly_pads.length; i++){
+		ctx.fillRect(lilly_pads[i].x, lilly_pads[i].y, lilly_pads[i].width, lilly_pads[i].height);
+	}	
+}
+
+function initialize_lilly_pads(){
 	lilly_pads = new Array();
 	for (var i = 0; i < 5; i++){
 		lilly_pads[i] = new Object();
@@ -40,10 +46,6 @@ function draw_lilly_pads(){
 	lilly_pads[2].x = 184;
 	lilly_pads[3].x = 268;
 	lilly_pads[4].x = 353;
-	ctx.fillStyle = "#008000";
-	for (var i = 0; i < lilly_pads.length; i++){
-		ctx.fillRect(lilly_pads[i].x, lilly_pads[i].y, lilly_pads[i].width, lilly_pads[i].height);
-	}	
 }
 
 function initialize_parameters(){
@@ -62,6 +64,7 @@ function initialize_parameters(){
 	time = 0;
 	score = 0;
 	highScore = 0;
+	homeFroggerCount = 0;
 	highestVerticalPosition = 0; //used to give points for successfully jumping
 	verticalPosition = 0;         //frogger forward
 	milliseconds = 50;
@@ -69,6 +72,7 @@ function initialize_parameters(){
 	spriteY = 367; //y coordinate to start clipping
 	initialize_logs();
 	initialize_vehicles();
+	initialize_lilly_pads();
 }
 
 function initialize_logs(){
@@ -91,9 +95,9 @@ function initialize_logs(){
 	log[3].x = 0 + log[3].width;
 	log[4].x = 0 - log[4].width;
 	log[0].speed = .05;
-	log[1].speed = .05;
+	log[1].speed = -.05;
 	log[2].speed = .075;
-	log[3].speed = .05;
+	log[3].speed = -.05;
 	log[4].speed = .05;
 }
 
@@ -105,11 +109,11 @@ function initialize_vehicles(){
 		vehicle[i].y = frogCurrY - vehicleVertPosition*move;
 		vehicleVertPosition--;
 	}
-	vehicle[0].speed = .075;
+	vehicle[0].speed = -.075;
 	vehicle[1].speed = .05;
-	vehicle[2].speed = .075;
+	vehicle[2].speed = -.075;
 	vehicle[3].speed = .05;
-	vehicle[4].speed = .025;
+	vehicle[4].speed = -.025;
 	vehicle[0].width = 50;
 	vehicle[1].width = 33;
 	vehicle[2].width = 40;
@@ -134,9 +138,14 @@ function animation(){
 	draw_level(levelNum);
 	draw_score(score, highScore);
 	draw_game();
-	check_death();
+	check_frogger_home();
+	if (check_game_over()){
+		clearInterval(startGame);
+		alert("GAME OVER");
+	}
 	increment_logs();
 	increment_vehicles();
+	increment_frog();
 	check_off_board_log();
 	check_off_board_vehicle();
 	time++;
@@ -165,6 +174,7 @@ function draw_score(score, highScore){
 function draw_game(){
 	draw_logs();
 	draw_vehicles();
+	draw_home_froggers();
 	draw_frogger();
 }
 
@@ -200,9 +210,9 @@ function draw_vehicles(){
 
 function increment_logs(){
 	log[0].x += move*log[0].speed;
-	log[1].x -= move*log[1].speed;
+	log[1].x += move*log[1].speed;
 	log[2].x += move*log[2].speed;
-	log[3].x -= move*log[3].speed;
+	log[3].x += move*log[3].speed;
 	log[4].x += move*log[4].speed;
 }
 
@@ -225,12 +235,20 @@ function check_off_board_log(){
 }
 
 function increment_vehicles(){
-	vehicle[0].x -= move*vehicle[0].speed;
+	vehicle[0].x += move*vehicle[0].speed;
 	vehicle[1].x += move*vehicle[1].speed;
-	vehicle[2].x -= move*vehicle[2].speed;
+	vehicle[2].x += move*vehicle[2].speed;
 	vehicle[3].x += move*vehicle[3].speed;
-	vehicle[4].x -= move*vehicle[4].speed;
+	vehicle[4].x += move*vehicle[4].speed;
 }
+
+function increment_frog(){
+	for (var i = 0; i < log.length; i++){ 
+		if (check_intersection(frogCurrX, frogCurrY, frogWidth, frogHeight, log[i].x, log[i].y, log[i].width, log[i].height)){
+			frogCurrX += move*log[i].speed;
+		}
+	}
+}	
 
 function check_off_board_vehicle(){
 	if (vehicle[0].x + vehicle[0].width < 0){
@@ -260,12 +278,20 @@ function check_intersection(b1x, b1y, b1w, b1h, b2x, b2y, b2w, b2h){
 
 function check_death(){
 	if (check_drown() || check_vehicle_hit()){
-		ctx.drawImage(deadFrog, 0, 0, 30, 30, frogCurrX, frogCurrY, 30, 30);
-		frogCurrX = 185; 
-		frogCurrY = 495; 
-		spriteX = 11; 
-		spriteY = 367; 
+		return true;
 	}
+	return false;
+}
+
+function draw_dead_frog(){
+	ctx.drawImage(deadFrog, 0, 0, 30, 30, frogCurrX, frogCurrY, 30, 30);
+}	
+
+function reset_variables(){
+	frogCurrX = 185; 
+	frogCurrY = 495; 
+	spriteX = 11; 
+	spriteY = 367;
 }
 		
 function check_drown(){ 
@@ -278,8 +304,10 @@ function check_drown(){
 		return false;
 	}
 	for (var i = 0; i < lilly_pads.length; i++){
-		if (check_intersection(frogCurrX, frogCurrY, frogWidth, frogHeight, lilly_pads[i].x, lilly_pads[i].y, lilly_pads[i].width, lilly_pads[i].height)){
-			return false;
+		if (!lilly_pads[i].hasFrogger){
+			if (check_intersection(frogCurrX, frogCurrY, frogWidth, frogHeight, lilly_pads[i].x, lilly_pads[i].y, lilly_pads[i].width, lilly_pads[i].height)){
+				return false;
+			}
 		}
 	}
 	return true;
@@ -314,19 +342,31 @@ function check_key_press(){
 function upMove(){
 	if (frogCurrY - move >= 75){
 		frogCurrY -= move;
+		if (check_death()){
+			draw_dead_frog();
+			reset_variables();
+			numLives--;
+			return;
+		}
 		spriteX = 11;
 		spriteY = 367;
 		verticalPosition++;
 		if (verticalPosition > highestVerticalPosition){
 			highestVerticalPosition = verticalPosition;
 			score += 10;
-		}
+		}		
 	}
 }
 
 function downMove(){
 	if (frogCurrY + move <= 495){
 		frogCurrY += move;
+		if (check_death()){
+			draw_dead_frog();
+			reset_variables();
+			numLives--;
+			return;
+		}
 		spriteX = 79;
 		spriteY = 367;
 		verticalPosition--;
@@ -336,6 +376,12 @@ function downMove(){
 function leftMove(){
 	if (frogCurrX - moveLR >= 0){
 		frogCurrX -= moveLR;
+		if (check_death()){
+			draw_dead_frog();
+			reset_variables();
+			numLives--;
+			return;
+		}
 		spriteX = 80;
 		spriteY = 334;
 	}
@@ -344,7 +390,45 @@ function leftMove(){
 function rightMove(){
 	if (frogCurrX + moveLR <= 399){
 		frogCurrX += moveLR;
+		if (check_death()){
+			draw_dead_frog();
+			reset_variables();
+			numLives--;
+			return;
+		}
 		spriteX = 11;
 		spriteY = 333;
 	}
 }
+
+function check_frogger_home(){
+	for (var i = 0; i < lilly_pads.length; i++){
+		if (check_intersection(frogCurrX, frogCurrY, frogWidth, frogHeight, lilly_pads[i].x, lilly_pads[i].y, lilly_pads[i].width, lilly_pads[i].height)){
+			lilly_pads[i].hasFrogger = true;
+			console.log(lilly_pads[i].hasFrogger);
+			frogCurrX = 185; 
+			frogCurrY = 495; 
+			spriteX = 11; 
+			spriteY = 367; 
+			score += 50;
+			homeFroggerCount++;
+			if (homeFroggerCount == 5){
+				score += 1000;
+			}	
+		}
+	}
+}
+
+function draw_home_froggers(){
+	for (var i = 0; i < lilly_pads.length; i++){
+		if (lilly_pads[i].hasFrogger){
+			ctx.drawImage(img, 79, 367, frogWidth, frogHeight, lilly_pads[i].x, lilly_pads[i].y, frogWidth, frogHeight);
+		}
+	}
+}
+
+function check_game_over(){
+	if (numLives == 0){
+		return true;
+	}
+}	
