@@ -74,6 +74,7 @@ function initialize_parameters(){
 	initialize_vehicles();
 	initialize_alligator();
 	initialize_lilly_pads();
+	initialize_fly();
 }
 
 function initialize_logs(){
@@ -135,11 +136,18 @@ function initialize_vehicles(){
 function initialize_alligator(){
 	alligator = new Object();
 	alligator.width = 96;
-	alligator.height = 34;
-	alligator.speed = -.05;
+	alligator.height = 30;
 	alligator.x = 0;
-	alligator.y = frogCurrY - 9.2*move;;
+	alligator.y = frogCurrY - 9*move;;
 }
+
+function initialize_fly(){
+	fly = new Object();
+	fly.width = 21;
+	fly.height = 22;
+	fly.x = -50;
+	fly.y = -50;
+}	
 
 function animation(){
 	clear_canvas();
@@ -149,6 +157,13 @@ function animation(){
 	draw_score(score, highScore);
 	draw_game();
 	check_frogger_home();
+	check_frogger_get_fly();
+	if (check_death()){
+		draw_dead_frog();
+		reset_variables();
+		numLives--;
+		return;
+	}
 	if (check_game_over()){
 		clearInterval(startGame);
 		alert("GAME OVER");
@@ -157,6 +172,7 @@ function animation(){
 	increment_vehicles();
 	increment_frog();
 	increment_alligator();
+	increment_fly();
 	check_off_board_log();
 	check_off_board_vehicle();
 	check_off_board_alligator();
@@ -187,6 +203,7 @@ function draw_game(){
 	draw_logs();
 	draw_vehicles();
 	draw_alligator();
+	draw_fly();
 	draw_home_froggers();
 	draw_frogger();
 }
@@ -223,6 +240,20 @@ function draw_vehicles(){
 
 function draw_alligator(){
 	ctx.drawImage(img, 151, 327, alligator.width, alligator.height, alligator.x, alligator.y, alligator.width, alligator.height);
+}
+
+function draw_fly(){
+	if (fly.x >= 0 && fly.x <= 399){
+		ctx.drawImage(img, 137, 232, fly.width, fly.height, fly.x, fly.y, fly.width, fly.height)
+	}
+	else {
+		randomNum1 = Math.floor((Math.random()*50+1));
+		if (randomNum1 == 3){
+			randomNum2 = Math.floor((Math.random()*5)+1);
+			fly.y = 495 - (6+randomNum2)*move;
+			fly.x = log[5-randomNum2].x;
+		}
+	}
 }
 
 function increment_logs(){
@@ -277,6 +308,14 @@ function increment_alligator(){
 	alligator.x += move*log[2].speed;
 }	
 
+function increment_fly(){
+	for (var i = 0; i < log.length; i++){ 
+		if (check_intersection(fly.x, fly.y, fly.width, fly.height, log[i].x, log[i].y, log[i].width, log[i].height)){
+			fly.x += move*log[i].speed;
+		}
+	}
+}
+
 function check_off_board_vehicle(){
 	if (vehicle[0].x + vehicle[0].width < 0){
 		vehicle[0].x = 399 + vehicle[0].width;
@@ -304,11 +343,18 @@ function check_intersection(b1x, b1y, b1w, b1h, b2x, b2y, b2w, b2h){
 }
 
 function check_death(){
-	if (check_drown() || check_vehicle_hit() || check_alligator_eat()){
+	if (check_drown() || check_vehicle_hit() || check_alligator_eat() || check_off_board_frog()){
 		return true;
 	}
 	return false;
 }
+
+function check_off_board_frog(){
+	if (frogCurrX < 0 || frogCurrY > 495){
+		return true;
+	}
+	return false;
+}	
 
 function draw_dead_frog(){
 	ctx.drawImage(deadFrog, 0, 0, 30, 30, frogCurrX, frogCurrY, 30, 30);
@@ -466,3 +512,11 @@ function check_game_over(){
 		return true;
 	}
 }	
+
+function check_frogger_get_fly(){
+	if (check_intersection(frogCurrX, frogCurrY, frogWidth, frogHeight, fly.x, fly.y, fly.width, fly.height)){
+		score += 200;
+		fly.x = -50;
+		fly.y = -50;
+	}
+}
