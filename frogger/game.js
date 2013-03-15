@@ -44,8 +44,8 @@ function draw_lilly_pads(){
 function initialize_parameters(){
 	frogCurrX = 185; //current x-coordinate of the frog
 	frogCurrY = 495; //current y-coordinate of the frog
-	frogWidth = 27;
-	frogHeight = 20;
+	frogWidth = 30;
+	frogHeight = 30;
 	left = 0; //move left
 	right = 0; //move right
 	up = 0; //move up
@@ -58,7 +58,8 @@ function initialize_parameters(){
 	score = 0;
 	highScore = 0;
 	milliseconds = 50;
-	currentImage = ctx.drawImage(img, 11, 367, frogWidth, frogHeight, frogCurrX, frogCurrY, frogWidth, frogHeight);
+	spriteX = 11; //x coordinate to start clipping 
+	spriteY = 367; //y coordinate to start clipping
 	initialize_logs();
 	initialize_vehicles();
 }
@@ -160,7 +161,7 @@ function draw_game(){
 }
 
 function draw_frogger(){
-	ctx.drawImage(img, 11, 367, frogWidth, frogHeight, frogCurrX, frogCurrY, frogWidth, frogHeight);
+	ctx.drawImage(img, spriteX, spriteY, frogWidth, frogHeight, frogCurrX, frogCurrY, frogWidth, frogHeight);
 }
 
 function draw_logs(){
@@ -277,20 +278,24 @@ function check_key_press(){
 
 function upMove(){
 	frogCurrY -= move;
-	currentImage = ctx.drawImage(img, 11, 367, frogWidth, frogHeight, frogCurrX, frogCurrY, frogWidth, frogHeight);
+	spriteX = 11;
+	spriteY = 367;
 }
 
 function downMove(){
 	frogCurrY += move;
-	currentImage = ctx.drawImage(img, 79, 367, 24, 20, frogCurrX, frogCurrY, 24, 20);
+	spriteX = 79;
+	spriteY = 367;
 }
 
 function leftMove(){
 	frogCurrX -= move;
-	currentImage = ctx.drawImage(img, 80, 334, 22, 25, frogCurrX, frogCurrY, 22, 25);
+	spriteX = 80;
+	spriteY = 334;
 }
 
 function rightMove(){
 	frogCurrX += move;
-	currentImage = ctx.drawImage(img, 11, 333, 22, 24, frogCurrX, frogCurrY, 22, 24);
+	spriteX = 11;
+	spriteY = 333;
 }
