@@ -72,6 +72,7 @@ function initialize_parameters(){
 	spriteY = 367; //y coordinate to start clipping
 	initialize_logs();
 	initialize_vehicles();
+	initialize_alligator();
 	initialize_lilly_pads();
 }
 
@@ -131,6 +132,15 @@ function initialize_vehicles(){
 	vehicle[4].height = 28;
 }
 
+function initialize_alligator(){
+	alligator = new Object();
+	alligator.width = 96;
+	alligator.height = 34;
+	alligator.speed = -.05;
+	alligator.x = 0;
+	alligator.y = frogCurrY - 9.2*move;;
+}
+
 function animation(){
 	clear_canvas();
 	draw_background();
@@ -146,8 +156,10 @@ function animation(){
 	increment_logs();
 	increment_vehicles();
 	increment_frog();
+	increment_alligator();
 	check_off_board_log();
 	check_off_board_vehicle();
+	check_off_board_alligator();
 	time++;
 }
 
@@ -174,6 +186,7 @@ function draw_score(score, highScore){
 function draw_game(){
 	draw_logs();
 	draw_vehicles();
+	draw_alligator();
 	draw_home_froggers();
 	draw_frogger();
 }
@@ -208,12 +221,22 @@ function draw_vehicles(){
 	ctx.drawImage(img, 81, 263, 26, 28, vehicle[4].x, vehicle[4].y, 26, 28);
 }
 
+function draw_alligator(){
+	ctx.drawImage(img, 151, 327, alligator.width, alligator.height, alligator.x, alligator.y, alligator.width, alligator.height);
+}
+
 function increment_logs(){
 	log[0].x += move*log[0].speed;
 	log[1].x += move*log[1].speed;
 	log[2].x += move*log[2].speed;
 	log[3].x += move*log[3].speed;
 	log[4].x += move*log[4].speed;
+}
+
+function check_off_board_alligator(){
+	if (alligator.x > 399){
+		alligator.x = 0 - log[2].width;
+	}
 }
 
 function check_off_board_log(){
@@ -250,6 +273,10 @@ function increment_frog(){
 	}
 }	
 
+function increment_alligator(){
+	alligator.x += move*log[2].speed;
+}	
+
 function check_off_board_vehicle(){
 	if (vehicle[0].x + vehicle[0].width < 0){
 		vehicle[0].x = 399 + vehicle[0].width;
@@ -277,7 +304,7 @@ function check_intersection(b1x, b1y, b1w, b1h, b2x, b2y, b2w, b2h){
 }
 
 function check_death(){
-	if (check_drown() || check_vehicle_hit()){
+	if (check_drown() || check_vehicle_hit() || check_alligator_eat()){
 		return true;
 	}
 	return false;
@@ -318,6 +345,13 @@ function check_vehicle_hit(){
 		if (check_intersection(frogCurrX, frogCurrY, frogWidth, frogHeight, vehicle[i].x, vehicle[i].y, vehicle[i].width, vehicle[i].height)){
 			return true;
 		}
+	}
+	return false;
+}	
+
+function check_alligator_eat(){
+	if (check_intersection(frogCurrX, frogCurrY, frogWidth, frogHeight, alligator.x, alligator.y, alligator.width, alligator.height)){
+		return true;
 	}
 	return false;
 }	
