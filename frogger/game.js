@@ -1,6 +1,8 @@
 function start_game(){
 	img=new Image();
 	img.src="assets/frogger_sprites.png";
+	deadFrog = new Image();
+	deadFrog.src="assets/dead_frog.png";
 	c=document.getElementById("game");
 	ctx=c.getContext("2d");
 	initialize_parameters();
@@ -29,6 +31,9 @@ function draw_lilly_pads(){
 	lilly_pads = new Array();
 	for (var i = 0; i < 5; i++){
 		lilly_pads[i] = new Object();
+		lilly_pads[i].y = 80;
+		lilly_pads[i].width = 27;
+		lilly_pads[i].height = 20;
 	}
 	lilly_pads[0].x = 13;
 	lilly_pads[1].x = 99;
@@ -37,7 +42,7 @@ function draw_lilly_pads(){
 	lilly_pads[4].x = 353;
 	ctx.fillStyle = "#008000";
 	for (var i = 0; i < lilly_pads.length; i++){
-		ctx.fillRect(lilly_pads[i].x, 80, 27, 20);
+		ctx.fillRect(lilly_pads[i].x, lilly_pads[i].y, lilly_pads[i].width, lilly_pads[i].height);
 	}	
 }
 
@@ -127,6 +132,7 @@ function animation(){
 	draw_level(levelNum);
 	draw_score(score, highScore);
 	draw_game();
+	check_death();
 	increment_logs();
 	increment_vehicles();
 	check_off_board_log();
@@ -250,14 +256,41 @@ function check_intersection(b1x, b1y, b1w, b1h, b2x, b2y, b2w, b2h){
 	return true;
 }
 
+function check_death(){
+	if (check_drown() || check_vehicle_hit()){
+		ctx.drawImage(deadFrog, 0, 0, 30, 30, frogCurrX, frogCurrY, 30, 30);
+		frogCurrX = 185; 
+		frogCurrY = 495; 
+		spriteX = 11; 
+		spriteY = 367; 
+	}
+}
+		
 function check_drown(){ 
-	for (var i = 0; i < 5; i++){ 
+	for (var i = 0; i < log.length; i++){ 
 		if (check_intersection(frogCurrX, frogCurrY, frogWidth, frogHeight, log[i].x, log[i].y, log[i].width, log[i].height)){
+			return false;
+		}
+	}
+	if (frogCurrY > 273){
+		return false;
+	}
+	for (var i = 0; i < lilly_pads.length; i++){
+		if (check_intersection(frogCurrX, frogCurrY, frogWidth, frogHeight, lilly_pads[i].x, lilly_pads[i].y, lilly_pads[i].width, lilly_pads[i].height)){
 			return false;
 		}
 	}
 	return true;
 }
+
+function check_vehicle_hit(){
+	for (var i = 0; i < 5; i++){
+		if (check_intersection(frogCurrX, frogCurrY, frogWidth, frogHeight, vehicle[i].x, vehicle[i].y, vehicle[i].width, vehicle[i].height)){
+			return true;
+		}
+	}
+	return false;
+}	
 
 function check_key_press(){
 	document.addEventListener("keydown", function(event){
@@ -277,9 +310,11 @@ function check_key_press(){
 }
 
 function upMove(){
-	frogCurrY -= move;
-	spriteX = 11;
-	spriteY = 367;
+	if (frogCurrY - move >= 75){
+		frogCurrY -= move;
+		spriteX = 11;
+		spriteY = 367;
+	}
 }
 
 function downMove(){
@@ -289,13 +324,13 @@ function downMove(){
 }
 
 function leftMove(){
-	frogCurrX -= move;
+	frogCurrX -= moveLR;
 	spriteX = 80;
 	spriteY = 334;
 }
 
 function rightMove(){
-	frogCurrX += move;
+	frogCurrX += moveLR;
 	spriteX = 11;
 	spriteY = 333;
 }
