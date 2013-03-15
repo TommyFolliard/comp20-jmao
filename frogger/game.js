@@ -62,6 +62,8 @@ function initialize_parameters(){
 	time = 0;
 	score = 0;
 	highScore = 0;
+	highestVerticalPosition = 0; //used to give points for successfully jumping
+	verticalPosition = 0;         //frogger forward
 	milliseconds = 50;
 	spriteX = 11; //x coordinate to start clipping 
 	spriteY = 367; //y coordinate to start clipping
@@ -314,6 +316,11 @@ function upMove(){
 		frogCurrY -= move;
 		spriteX = 11;
 		spriteY = 367;
+		verticalPosition++;
+		if (verticalPosition > highestVerticalPosition){
+			highestVerticalPosition = verticalPosition;
+			score += 10;
+		}
 	}
 }
 
@@ -322,6 +329,7 @@ function downMove(){
 		frogCurrY += move;
 		spriteX = 79;
 		spriteY = 367;
+		verticalPosition--;
 	}
 }
 
