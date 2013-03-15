@@ -326,9 +326,11 @@ function downMove(){
 }
 
 function leftMove(){
-	frogCurrX -= moveLR;
-	spriteX = 80;
-	spriteY = 334;
+	if (frogCurrX - moveLR >= 0){
+		frogCurrX -= moveLR;
+		spriteX = 80;
+		spriteY = 334;
+	}
 }
 
 function rightMove(){
