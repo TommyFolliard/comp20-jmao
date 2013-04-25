@@ -22,3 +22,6 @@ where not everything is viewable to the implementer, with the exception of error
 important thing I learned in this course is that everything is somewhat related to another. For example, 
 the DOM lab working with status updates was revisited when working with cookies and local storage. Another 
 example was the frogger game revisited when working with scorecenter. 
+
+Another aspect that I learned a lot about is effectively reading the manuals to APIs and responses 
+on stackoverflow. I didn't know that so much information is available just by the google search. 
