@@ -8,3 +8,6 @@ abstract of findings, issues found, conclusion
 - report is named report.html in folder named security in private GitHub 
 repo in gh-pages and master branches
 
+2. I did not collaborate with anyone on this assignment.
+
+3. I spent approximately 10 hours on this assignment.
