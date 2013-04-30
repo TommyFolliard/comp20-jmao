@@ -25,3 +25,4 @@ example was the frogger game revisited when working with scorecenter.
 
 Another aspect that I learned a lot about is effectively reading the manuals to APIs and responses 
 on stackoverflow. I didn't know that so much information is available just by the google search. 
+
